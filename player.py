@@ -11,9 +11,7 @@ class Player(pygame.sprite.Sprite):
         self.bounds_x = bounds_x
         self.bounds_y = bounds_y
 
-        img = pygame.image.load('Ship_1.png').convert()
-        img.convert_alpha()  # optimise alpha
-        img.set_colorkey(constants.ALPHA)  # set alpha
+        img = pygame.image.load('Ship_1.png').convert_alpha()
         self.image = img
         self.rect = self.image.get_rect()
 
@@ -32,5 +30,3 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = self.bounds_y - self.image.get_height()
         elif self.rect.y <= 0:
             self.rect.y = 0
-
-        print(f'{self.rect.x}, {self.rect.y}')

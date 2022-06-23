@@ -12,9 +12,7 @@ class Bullet(pygame.sprite.Sprite):
         self.velocity = Vector2(0, 0)
         self.bounds_x = bounds_x
         self.bounds_y = bounds_y
-        img = pygame.image.load('15.png').convert()
-        img.convert_alpha()  # optimise alpha
-        img.set_colorkey(constants.ALPHA)  # set alpha
+        img = pygame.image.load('15.png').convert_alpha()
         self.image = img
         self.rect = self.image.get_rect()
 
@@ -24,6 +22,9 @@ class Bullet(pygame.sprite.Sprite):
     def update(self):
         self.rect.x = self.rect.x + self.velocity.x
         self.rect.y = self.rect.y + self.velocity.y
+
+        if self.is_out_of_bounds():
+            self.kill()
 
     def set_starting_loc_and_vel(self):
         roll = random.random()
