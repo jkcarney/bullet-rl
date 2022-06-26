@@ -1,6 +1,8 @@
 import pygame
+from pygame import Vector2
 import os
 import constants
+import heapq
 
 
 class Player(pygame.sprite.Sprite):
@@ -30,3 +32,15 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = self.bounds_y - self.image.get_height()
         elif self.rect.y <= 0:
             self.rect.y = 0
+
+    def get_closest_bullets(self, bullet_list, n=10):
+        l = []
+        for b in bullet_list:
+            distance = self.dis(Vector2(b.rect.x, b.rect.y))
+            l.append((distance, b))
+        l.sort(key=lambda e: e[0])
+        return l[:n]
+
+    def dis(self, other):
+        pos = Vector2(self.rect.centerx, self.rect.centery)
+        return pos.distance_to(other)

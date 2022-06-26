@@ -7,9 +7,10 @@ import sys
 from player import Player
 from bullet import Bullet
 import constants
+import argparse
 
 
-def mainloop():
+def mainloop(debug):
     pygame.init()
     screen = pygame.display.set_mode(constants.SIZE)
     player = Player(constants.width, constants.height)  # spawn player
@@ -83,14 +84,31 @@ def mainloop():
             pygame.quit()
             sys.exit()
 
+        closest = player.get_closest_bullets(bullet_list, n=constants.CLOSEST_BULLET_COUNT)
+
         screen.fill(constants.BLACK)
         player.update()
         bullet_list.update()
         bullet_list.draw(screen)
         player_list.draw(screen)
+
+        if debug:
+            debug_draw(screen, player, closest)
+
         pygame.display.flip()
+
         timer.tick(60)
 
 
+def debug_draw(screen, player, closest):
+    for _, bullet in closest:
+        pygame.draw.line(screen, 255, Vector2(player.rect.centerx, player.rect.centery),
+                         Vector2(bullet.rect.centerx, bullet.rect.centery), width=1)
+
+
 if __name__ == "__main__":
-    mainloop()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--debug", default=False, action=argparse.BooleanOptionalAction)
+    args = parser.parse_args()
+
+    mainloop(args.debug)
