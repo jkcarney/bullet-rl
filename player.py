@@ -33,6 +33,10 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.y <= 0:
             self.rect.y = 0
 
+    def zero(self):
+        self.movex = 0
+        self.movey = 0
+
     def get_closest_bullets(self, bullet_list, n=10):
         l = []
         for b in bullet_list:

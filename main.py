@@ -101,10 +101,12 @@ def mainloop(debug):
 
 
 def debug_draw(screen, player, closest):
-    for _, bullet in closest:
+    for dis, bullet in closest:
         pygame.draw.line(screen, 255, Vector2(player.rect.centerx, player.rect.centery),
                          Vector2(bullet.rect.centerx, bullet.rect.centery), width=1)
+        print(dis, end=" ")
 
+    print()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
