@@ -40,9 +40,10 @@ class Player(pygame.sprite.Sprite):
     def get_closest_bullets(self, bullet_list, n=10):
         l = []
         for b in bullet_list:
-            distance = self.dis(Vector2(b.rect.x, b.rect.y))
-            l.append((distance, b))
-        l.sort(key=lambda e: e[0])
+            distance = self.dis(Vector2(b.rect.centerx, b.rect.centery))
+            # l.append((distance, b))
+            l.append((b, distance, (b.rect.centerx, b.rect.centery)))
+        l.sort(key=lambda e: e[1])
         return l[:n]
 
     def dis(self, other):
