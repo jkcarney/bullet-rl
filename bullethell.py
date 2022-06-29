@@ -37,9 +37,9 @@ class BulletHell(gym.Env):
         self.action_space = Discrete(5)
         #  Observation space is the closest bullet count (each with a distance) and 2 numbers representing the x and y
         #  of the player's current position
-        self.observation_space = Box(low=0,
+        self.observation_space = Box(low=-constants.width,
                                      high=constants.width,
-                                     shape=(constants.CLOSEST_BULLET_COUNT + 1, 2))
+                                     shape=(constants.CLOSEST_BULLET_COUNT, 2))
 
         self.bullet_list = pygame.sprite.Group()
         for _ in range(constants.CLOSEST_BULLET_COUNT + 3):
@@ -55,8 +55,8 @@ class BulletHell(gym.Env):
         # Pad out list to always fit 9,2
         while len(out) != constants.CLOSEST_BULLET_COUNT:
             out.append((-1, -1))
-        out.append((self.player.rect.centerx, self.player.rect.centery))
-        return np.array([*out])
+
+        return np.array([*out]) - np.array([self.player.rect.centerx, self.player.rect.centery])
 
     # noinspection PyUnresolvedReferences
     def step(self, action) -> Tuple[ObsType, float, bool, dict]:

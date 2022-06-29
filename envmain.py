@@ -25,14 +25,13 @@ def main():
     done = False
 
     model = DQN("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=10000)
+    model.learn(total_timesteps=100000)
     model.save("bullet_man")
-
     obs = env.reset()
 
     for _ in range(1000):
         while not done:
-            action = env.action_space.sample()
+            action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, info = env.step(action)
             env.render()
 
