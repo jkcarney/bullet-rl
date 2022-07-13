@@ -17,12 +17,12 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def is_out_of_bounds(self):
-        return self.bounds_x < self.rect.x < 0 or self.bounds_y < self.rect.y < 0
+        return self.bounds_x + 10 < self.rect.centerx or self.rect.centerx < 0 - 10 or \
+               self.bounds_y + 10 < self.rect.centery or self.rect.centery < 0 - 10
 
     def update(self):
         self.rect.x = self.rect.x + self.velocity.x
         self.rect.y = self.rect.y + self.velocity.y
-
         if self.is_out_of_bounds():
             self.kill()
 

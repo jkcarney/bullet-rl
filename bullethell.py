@@ -35,8 +35,8 @@ class BulletHell(gym.Env):
 
         # 5 discrete actions; do nothing, up, down, left, right
         self.action_space = Discrete(5)
-        #  Observation space is the closest bullet count (each with a distance) and 2 numbers representing the x and y
-        #  of the player's current position
+        # Observation space is an array of tuples (or 2d array), the closest bullet count bullets
+        # position relative to the spaceship
         self.observation_space = Box(low=-constants.width,
                                      high=constants.width,
                                      shape=(constants.CLOSEST_BULLET_COUNT, 2))
@@ -49,6 +49,12 @@ class BulletHell(gym.Env):
 
         self.steps = 4
 
+    # https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Vector_formulation
+    # Vector2.length((p - a) - Vector2.dot((p - a), v) * v)
+    # p => Player's Current Location
+    # a => Bullet Location
+    # v => Bullet's Vector, -NORMALIZED-
+    # This returns p's distance to the line formed by 'a' and 'v'. It has some rounding error but it's pretty close
     def observe(self):
         self.closest = self.player.get_closest_bullets(self.bullet_list, n=constants.CLOSEST_BULLET_COUNT)
         out = [x[2] for x in self.closest]
@@ -100,7 +106,7 @@ class BulletHell(gym.Env):
         blocks_hit_list = pygame.sprite.spritecollide(self.player, self.bullet_list, False)
         if len(blocks_hit_list) != 0:
             done = True
-            reward = -5
+            reward = 0
 
         return self.observe(), reward, done, {}
 
@@ -119,7 +125,7 @@ class BulletHell(gym.Env):
         self.player_list.sprite.rect.x = constants.width // 2  # go to x
         self.player_list.sprite.rect.y = constants.height // 2  # go to y
         self.timer = pygame.time.Clock()
-        for _ in range(5):
+        for _ in range(1):
             bullet = Bullet(constants.width, constants.height)
             self.bullet_list.add(bullet)
             bullet.set_starting_loc_and_vel()
