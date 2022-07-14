@@ -1,8 +1,9 @@
+import argparse
 from datetime import datetime
-
 from bullethell import BulletHell
 from stable_baselines3 import DQN
 import torch
+import os
 
 # def main():
 #     env = BulletHell()
@@ -22,24 +23,24 @@ import torch
 #     env.close()
 
 
-def main():
-    torch.device("cpu")
+def main(timesteps, device):
+    torch.device(device)
     env = BulletHell()
     done = False
 
-    timesteps = 10000
-
-    model = DQN.load("bullet_man-100000", env=env)
-    # model = DQN("MlpPolicy",
-    #             env,
-    #             verbose=1,
-    #             device="cpu")
-
-    start = datetime.now()
-    #model.learn(total_timesteps=timesteps)
-    #model.save(f"bullet_man-{timesteps}")
-
     obs = env.reset()
+    path_name = f'bullet_man-{timesteps}-{str(env.observation_space.shape)}'
+
+    if os.path.exists(f'{path_name}.zip'):
+        model = DQN.load(path_name, env=env, device=device)
+    else:
+        model = DQN("MlpPolicy",
+                    env,
+                    verbose=1,
+                    device=device)
+
+        model.learn(total_timesteps=timesteps)
+        model.save(path_name)
 
     n_episodes = 20
     total_reward = 0
@@ -61,4 +62,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--timesteps", default=10000, type=int)
+    parser.add_argument("-d", "--device", default='cpu')
+    args = parser.parse_args()
+    main(args.timesteps, args.device)

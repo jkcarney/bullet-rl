@@ -7,6 +7,7 @@ from gym.spaces import Discrete, Box
 from pygame import Vector2
 import numpy as np
 import sys
+import math
 from player import Player
 from bullet import Bullet
 import constants
@@ -62,6 +63,7 @@ class BulletHell(gym.Env):
         while len(out) != constants.CLOSEST_BULLET_COUNT:
             out.append((-1, -1))
 
+        # Do matrix subtraction to get relative coordinates
         return np.array([*out]) - np.array([self.player.rect.centerx, self.player.rect.centery])
 
     # noinspection PyUnresolvedReferences
@@ -125,7 +127,7 @@ class BulletHell(gym.Env):
         self.player_list.sprite.rect.x = constants.width // 2  # go to x
         self.player_list.sprite.rect.y = constants.height // 2  # go to y
         self.timer = pygame.time.Clock()
-        for _ in range(1):
+        for _ in range(5):
             bullet = Bullet(constants.width, constants.height)
             self.bullet_list.add(bullet)
             bullet.set_starting_loc_and_vel()
@@ -137,3 +139,12 @@ class BulletHell(gym.Env):
     def close(self):
         pygame.display.quit()
         pygame.quit()
+
+
+# fun lil code to draw lines teehee
+
+# pygame.draw.line(self.screen, pygame.color.Color('deeppink'),
+#                  Vector2(self.player.rect.centerx, self.player.rect.centery),
+#                  Vector2(self.player.rect.centerx - math.cos(45 * math.pi / 180) * 100,
+#                          self.player.rect.centery - math.sin(45 * math.pi / 180) * 100),
+#                  width=3)
