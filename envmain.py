@@ -23,7 +23,7 @@ import os
 #     env.close()
 
 
-def main(timesteps, device):
+def main(timesteps, device, overwrite):
     torch.device(device)
     env = BulletHell()
     done = False
@@ -31,7 +31,7 @@ def main(timesteps, device):
     obs = env.reset()
     path_name = f'bullet_man-{timesteps}-{str(env.observation_space.shape)}'
 
-    if os.path.exists(f'{path_name}.zip'):
+    if os.path.exists(f'{path_name}.zip') and not overwrite:
         model = DQN.load(path_name, env=env, device=device)
     else:
         model = DQN("MlpPolicy",
@@ -64,6 +64,7 @@ def main(timesteps, device):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--timesteps", default=10000, type=int)
+    parser.add_argument("-r", "--overwrite", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("-d", "--device", default='cpu')
     args = parser.parse_args()
-    main(args.timesteps, args.device)
+    main(args.timesteps, args.device, args.overwrite)
